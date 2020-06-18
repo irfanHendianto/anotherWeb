@@ -2,10 +2,17 @@
   <div class="home">
     <v-subheader>Home</v-subheader>
     <v-container>
-        <Popup />
+        <v-layout row wrap justify-end class="ma-auto">
+          <v-flex md1 xs12>
+            <modalCreate />
+          </v-flex>
+          <v-flex lg1 md2 xs12 style="margin-left: 3%;">
+            <Popup />
+          </v-flex>
+        </v-layout>
         <v-card>
           <v-card-title>
-            Nutrition
+            Produk
             <v-spacer></v-spacer>
             <v-text-field
               v-model="search"
@@ -20,8 +27,24 @@
             :items="desserts"
             :search="search"
             :items-per-page="5"
- 
-          ></v-data-table>
+          >
+            <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+              >
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                small
+                @click="deleteItem(item)"
+              >
+                mdi-delete
+              </v-icon>
+            </template>
+          
+          </v-data-table>
         </v-card>
     </v-container>
   </div>
@@ -30,108 +53,91 @@
 <script>
 // @ is an alias to /src
 import Popup from '../components/Popup'
+import modalCreate from '../components/ModalCreateProduct'
 export default {
   name: 'Home',
-  components:{Popup},
+  components:{Popup,modalCreate},
   data(){
     return {
         search: '',
         headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
+          { text: 'No', value: 'id', align: 'start',},
+          { text: 'Nama Produk', value: 'nama_Produk' },
+          { text: 'Jumlah', value: 'jumlah' },
+          { text: 'Harga', value: 'harga' },
+          { text: 'Actions', value: 'actions', sortable: false },
         ],
         desserts: [
           {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
+            id: '1',
+            nama_Produk: "Mentos",
+            jumlah: 100,
+            harga: "Rp."+5.000,
           },
           {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
+            id: '2',
+            nama_Produk: "Daia",
+            jumlah: 50,
+            harga: "Rp."+20.000,
           },
           {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
+            id: '3',
+            nama_Produk: "Oatmeal",
+            jumlah: 20,
+            harga: "Rp."+20.000,
           },
           {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
+            id: '4',
+            nama_Produk: "Wipol",
+            jumlah: 10,
+            harga: "Rp."+4000,
           },
           {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
+            id: '5',
+            nama_Produk: "Pepsodent",
+            jumlah: 100,
+            harga: "Rp."+25.000,
           },
           {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
+            id: '6',
+            nama_Produk: "Formula",
+            jumlah: 100,
+            harga: "Rp."+15.000,
           },
           {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
+            id: '7',
+            nama_Produk: "LifeBoy",
+            jumlah: 100,
+            harga: "Rp."+5000,
           },
           {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
+            id: '8',
+            nama_Produk: "Sensodent",
+            jumlah: 100,
+            harga: "Rp."+28.000,
           },
           {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
+            id: '9',
+            nama_Produk: "Oreo",
+            jumlah: 20,
+            harga: "Rp."+10.000,
           },
           {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
+            id: '10',
+            nama_Produk: "Rinso",
+            jumlah: 100,
+            harga: "Rp."+14.000,
           },
         ],
-    }
+        
+     }
+  },
+  methods:{
+    deleteItem (item) {
+      console.log(item)
+      const index = this.desserts.indexOf(item)
+      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+    },
   }
  
 }

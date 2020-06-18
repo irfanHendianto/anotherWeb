@@ -5,14 +5,10 @@
       <!-- <v-icon  @click="drawer = !drawer" style="background-color:white; border-radius:10px; margin-right:10px">
         mdi-dots-vertical
       </v-icon> -->
-      <v-toolbar-title class="grey lighten-4">Page title</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      <div class="ma-auto">
+         <v-toolbar-title class="grey lighten-4">Sistem Gudang</v-toolbar-title>
+      </div>
+      
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" app dark style="background-color: #9652ff;"> 
      <v-list-item>
@@ -21,7 +17,7 @@
             Application
           </v-list-item-title>
           <v-list-item-subtitle>
-            subtext
+            Sistem Gudang
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
