@@ -15,15 +15,15 @@
                     <v-container>
                         <v-row>
                             <v-col cols="12" sm="12">
-                                <v-text-field label="Name Produk"></v-text-field>
+                                <v-text-field label="Name Produk" :value="defaultItem"></v-text-field>
                             </v-col>
 
                             <v-col cols="12" sm="12">
-                                <v-text-field label="Jumlah"></v-text-field>
+                                <v-text-field label="Jumlah"  :value="defaultItem"></v-text-field>
                             </v-col>
 
                             <v-col cols="12" sm="12">
-                                <v-text-field label="Harga"></v-text-field>
+                                <v-text-field label="Harga"  :value="defaultItem"></v-text-field>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -37,8 +37,10 @@
         </v-dialog>
     </div>
 </template>
+
 <script>
   export default {
+    props : { defaultItem },
     data () {
       return {
         dialog: false,

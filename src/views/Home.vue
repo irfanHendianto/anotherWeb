@@ -3,9 +3,48 @@
     <v-subheader>Home</v-subheader>
     <v-container>
         <v-layout row wrap justify-end class="ma-auto">
+
           <v-flex md1 xs12>
-            <modalCreate />
+            <div  class="text-right">
+                <v-dialog v-model="dialog" width="500px">
+
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on" >Produk Baru</v-btn>
+                    </template>
+
+                    <v-card>
+                        <v-card-title>
+                            <span class="headline">Produk Baru</span>
+                        </v-card-title>
+
+                        <v-card-text>
+                            <v-container>
+                                <v-row>
+                                    <v-col cols="12" sm="12">
+                                        <v-text-field label="Name Produk" v-model="editedItem.nama_product"></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12">
+                                        <v-text-field label="Jumlah"  v-model="editedItem.jumlah"></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12">
+                                        <v-text-field label="Harga"  v-model="editedItem.Harga"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-card-text>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                            <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </div>
           </v-flex>
+
           <v-flex lg1 md2 xs12 style="margin-left: 3%;">
             <Popup />
           </v-flex>
@@ -24,7 +63,7 @@
           </v-card-title>
           <v-data-table
             :headers="headers"
-            :items="desserts"
+            :items="product"
             :search="search"
             :items-per-page="5"
           >
@@ -52,92 +91,80 @@
 
 <script>
 // @ is an alias to /src
+import axios from 'axios'
 import Popup from '../components/Popup'
-import modalCreate from '../components/ModalCreateProduct'
 export default {
   name: 'Home',
-  components:{Popup,modalCreate},
+  components:{Popup},
   data(){
     return {
         search: '',
+        dialog: false,
         headers: [
-          { text: 'No', value: 'id', align: 'start',},
-          { text: 'Nama Produk', value: 'nama_Produk' },
+          { text: 'Nama Produk', value: 'nama_product' },
           { text: 'Jumlah', value: 'jumlah' },
-          { text: 'Harga', value: 'harga' },
+          { text: 'Harga', value: 'Harga' },
           { text: 'Actions', value: 'actions', sortable: false },
         ],
-        desserts: [
-          {
-            id: '1',
-            nama_Produk: "Mentos",
-            jumlah: 100,
-            harga: "Rp."+5.000,
-          },
-          {
-            id: '2',
-            nama_Produk: "Daia",
-            jumlah: 50,
-            harga: "Rp."+20.000,
-          },
-          {
-            id: '3',
-            nama_Produk: "Oatmeal",
-            jumlah: 20,
-            harga: "Rp."+20.000,
-          },
-          {
-            id: '4',
-            nama_Produk: "Wipol",
-            jumlah: 10,
-            harga: "Rp."+4000,
-          },
-          {
-            id: '5',
-            nama_Produk: "Pepsodent",
-            jumlah: 100,
-            harga: "Rp."+25.000,
-          },
-          {
-            id: '6',
-            nama_Produk: "Formula",
-            jumlah: 100,
-            harga: "Rp."+15.000,
-          },
-          {
-            id: '7',
-            nama_Produk: "LifeBoy",
-            jumlah: 100,
-            harga: "Rp."+5000,
-          },
-          {
-            id: '8',
-            nama_Produk: "Sensodent",
-            jumlah: 100,
-            harga: "Rp."+28.000,
-          },
-          {
-            id: '9',
-            nama_Produk: "Oreo",
-            jumlah: 20,
-            harga: "Rp."+10.000,
-          },
-          {
-            id: '10',
-            nama_Produk: "Rinso",
-            jumlah: 100,
-            harga: "Rp."+14.000,
-          },
-        ],
-        
-     }
+        product: [],
+        editedIndex: -1,
+        editedItem: {
+          nama_product: '',
+          jumlah: '0',
+          Harga: '0',
+        },
+        defaultItem: {
+          nama_product: '',
+          jumlah: '0',
+          Harga: '0',
+        },
+      }
   },
   methods:{
-    deleteItem (item) {
-      console.log(item)
-      const index = this.desserts.indexOf(item)
-      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+    fetchProduct(){
+      axios.get('http://localhost:3000/list').then(response=>{
+        console.log(response);
+        this.product = response.data.data;
+      })
     },
+    editItem (item) {
+      this.editedIndex = this.product.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
+    deleteItem (item) {
+      const index = this.product.indexOf(item);
+      confirm('Are you sure you want to delete this item?') && this.product.splice(index, 1);
+      axios.delete('http://localhost:3000/product/'+ item.No).then(responsen=>{
+        console.log(responsen);
+      });
+    },
+    close () {
+      this.dialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
+    save () {
+      if (this.editedIndex > -1) {
+        console.log(this.editedItem.No);
+          axios.put('http://localhost:3000/editProduct/'+this.editedItem.No ,{nama_product: this.editedItem.nama_product, jumlah: this.editedItem.jumlah, Harga: this.editedItem.Harga}).then(response =>{
+          console.log(response);
+        });
+        Object.assign(this.product[this.editedIndex], this.editedItem)
+
+      } else {
+        axios.post('http://localhost:3000/addProduct',{nama_product: this.editedItem.nama_product, jumlah: this.editedItem.jumlah, Harga: this.editedItem.Harga}).then(response =>{
+          console.log(response);
+        });
+        this.product.push(this.editedItem)
+      }
+      this.close()
+    },
+  },
+  mounted(){
+    this.fetchProduct();
   }
  
 }
