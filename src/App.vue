@@ -4,16 +4,16 @@
     <v-main class="mx-4">
       <router-view></router-view>
     </v-main>
-    <!-- <Footers/> -->
+    <Footers/>
   </v-app>
 </template>
 
 <script>
 import Navbar from './components/Navbar'
-// import Footers from './components/Footers'
+import Footers from './components/Footers'
 export default {
   name: 'App',
-  components: { Navbar },
+  components: { Navbar,Footers},
   data: () => ({
     //
   }),

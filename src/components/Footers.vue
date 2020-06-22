@@ -1,7 +1,8 @@
 <template>
   <v-card >
     <v-footer
-      absolute
+      position: absolute
+      app
       class="font-weight-medium"
     >
       <v-col

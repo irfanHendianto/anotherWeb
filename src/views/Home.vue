@@ -46,8 +46,53 @@
           </v-flex>
 
           <v-flex lg1 md2 xs12 style="margin-left: 3%;">
-            <Popup />
+            <div class="text-right">
+              <v-dialog
+                v-model="file"
+                width="500"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                    
+                  <v-btn
+                    color="primary"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                    class="pop_up"
+                  >
+                    Add
+                  </v-btn>
+                </template>
+
+                <v-card>
+                  <v-card-title
+                    class="headline grey lighten-2"
+                    primary-title
+                  >
+                    Upload File
+                  </v-card-title>
+
+                  <v-card-text>
+                      <v-file-input multiple label="File input" v-model="fileUpload" ></v-file-input>
+                  </v-card-text>
+
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="upload"
+                    >
+                      Submit
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
           </v-flex>
+
         </v-layout>
         <v-card>
           <v-card-title>
@@ -92,14 +137,16 @@
 <script>
 // @ is an alias to /src
 import axios from 'axios'
-import Popup from '../components/Popup'
+// import Popup from '../components/Popup'
 export default {
   name: 'Home',
-  components:{Popup},
+  // components:{Popup},
   data(){
     return {
         search: '',
         dialog: false,
+        file: false,
+        fileUpload:[],
         headers: [
           { text: 'Nama Produk', value: 'nama_product' },
           { text: 'Jumlah', value: 'jumlah' },
@@ -123,8 +170,8 @@ export default {
   methods:{
     fetchProduct(){
       axios.get('http://localhost:3000/list').then(response=>{
-        console.log(response);
         this.product = response.data.data;
+        console.log(response.data.data);
       })
     },
     editItem (item) {
@@ -161,6 +208,17 @@ export default {
         this.product.push(this.editedItem)
       }
       this.close()
+    },
+    upload(){
+       this.file = false
+       const fd = new FormData();
+       fd.append('files', this.fileUpload[0])
+       axios.post('http://localhost:3000/upload',fd).then(response =>{
+         for(let i = 0 ; i< response.data.data.length ; i++) {
+           this.product.push(response.data.data[i]);
+          }
+       });
+       this.fileUpload = [];
     },
   },
   mounted(){
